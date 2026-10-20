@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boutique Léman — Mes adresses</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#18202a;--muted:#5d6876;--line:#d9dee5;--accent:#1f5fae;--ok:#1d7a46;--err:#b42318;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:#14233a;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header b{font-size:18px}header small{opacity:.75}
+header .moi{margin-left:auto;font-size:13px;opacity:.85}
+main{max-width:860px;margin:24px auto;padding:0 16px;display:flex;flex-direction:column;gap:16px}
+h1{font-size:22px;margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.banniere{padding:10px 14px;border-radius:8px;font-weight:600}
+.banniere.ok{background:#e6f4ec;color:var(--ok)}.banniere.err{background:#fdecea;color:var(--err)}
+ul.adresses{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ul.adresses li{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.defaut{font-size:12px;font-weight:700;color:#fff;background:var(--accent);border-radius:10px;padding:1px 8px}
+button{font:inherit;border-radius:6px;border:1px solid var(--accent);background:#fff;color:var(--accent);padding:7px 14px;cursor:pointer}
+button.pri{background:var(--accent);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+.champ{display:flex;flex-direction:column;gap:4px}.champ.large{grid-column:1/-1}
+label{font-size:13px;font-weight:600}
+label .req{color:var(--err)}
+input,select{font:inherit;padding:7px 9px;border:1px solid #b8c1cc;border-radius:6px;background:#fff}
+input[aria-invalid=true],select[aria-invalid=true]{border-color:var(--err)}
+.erreur{color:var(--err);font-size:12.5px;min-height:1em}
+.actions{grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end}
+.case{flex-direction:row;align-items:center;gap:8px}
+footer{max-width:860px;margin:0 auto 24px;padding:0 16px;color:var(--muted);font-size:12px}
+@media(max-width:620px){form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><b>Boutique Léman</b><small>application de démonstration — Petit-déjeuner du test</small><span class="moi" data-testid="client-connecte">Connecté : Alexandre Dupont</span></header>
+<main>
+  <div id="banniere" role="status" aria-live="polite"></div>
+
+  <section class="card" id="vue-liste" aria-labelledby="t-liste">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+      <h1 id="t-liste">Mes adresses</h1>
+      <span class="compteur" data-testid="compteur-adresses"></span>
+      <button class="pri" id="ajouter" data-testid="ajouter-adresse" style="margin-left:auto">Ajouter une adresse</button>
+    </div>
+    <ul class="adresses" data-testid="liste-adresses"></ul>
+  </section>
+
+  <section class="card" id="vue-formulaire" hidden aria-labelledby="t-form">
+    <h1 id="t-form" style="margin-bottom:14px">Nouvelle adresse de livraison</h1>
+    <div id="banniere-form" role="alert"></div>
+    <form id="formulaire" novalidate data-testid="formulaire-adresse">
+      <div class="champ large"><label for="nomAdresse">Nom de l'adresse <span class="req">*</span></label><input id="nomAdresse" name="nomAdresse" data-testid="champ-nomAdresse" required><span class="erreur" id="err-nomAdresse" data-testid="erreur-nomAdresse"></span></div>
+      <div class="champ"><label for="prenom">Prénom <span class="req">*</span></label><input id="prenom" name="prenom" data-testid="champ-prenom" required><span class="erreur" id="err-prenom" data-testid="erreur-prenom"></span></div>
+      <div class="champ"><label for="nom">Nom <span class="req">*</span></label><input id="nom" name="nom" data-testid="champ-nom" required><span class="erreur" id="err-nom" data-testid="erreur-nom"></span></div>
+      <div class="champ large"><label for="societe">Société</label><input id="societe" name="societe" data-testid="champ-societe"><span class="erreur" id="err-societe" data-testid="erreur-societe"></span></div>
+      <div class="champ"><label for="rue">Rue <span class="req">*</span></label><input id="rue" name="rue" data-testid="champ-rue" required><span class="erreur" id="err-rue" data-testid="erreur-rue"></span></div>
+      <div class="champ"><label for="numero">Numéro <span class="req">*</span></label><input id="numero" name="numero" data-testid="champ-numero" required><span class="erreur" id="err-numero" data-testid="erreur-numero"></span></div>
+      <div class="champ large"><label for="complement">Complément</label><input id="complement" name="complement" data-testid="champ-complement"><span class="erreur" id="err-complement" data-testid="erreur-complement"></span></div>
+      <div class="champ"><label for="pays">Pays <span class="req">*</span></label>
+        <select id="pays" name="pays" data-testid="champ-pays" required>
+          <option value="">— Choisir —</option><option>Suisse</option><option>France</option><option>Belgique</option><option>Luxembourg</option><option>Allemagne</option>
+        </select><span class="erreur" id="err-pays" data-testid="erreur-pays"></span></div>
+      <div class="champ"><label for="codePostal">Code postal <span class="req">*</span></label><input id="codePostal" name="codePostal" data-testid="champ-codePostal" required><span class="erreur" id="err-codePostal" data-testid="erreur-codePostal"></span></div>
+      <div class="champ"><label for="ville">Ville <span class="req">*</span></label><input id="ville" name="ville" data-testid="champ-ville" required><span class="erreur" id="err-ville" data-testid="erreur-ville"></span></div>
+      <div class="champ"><label for="telephone">Téléphone <span class="req">*</span></label><input id="telephone" name="telephone" data-testid="champ-telephone" required><span class="erreur" id="err-telephone" data-testid="erreur-telephone"></span></div>
+      <div class="champ large case"><input type="checkbox" id="defaut" name="defaut" data-testid="champ-defaut"><label for="defaut">Adresse par défaut</label></div>
+      <div class="actions">
+        <button type="button" id="annuler" data-testid="annuler">Annuler</button>
+        <button type="submit" class="pri" data-testid="enregistrer">Enregistrer</button>
+      </div>
+    </form>
+  </section>
+</main>
+<footer>
+  Données fictives conservées dans votre navigateur. Paramètres de démonstration :
+  <code>?reinitialiser</code> (une adresse « Domicile »), <code>?vide</code> (aucune adresse),
+  <code>?pleine</code> (10 adresses), <code>?sansbug</code> (version corrigée).
+  <button type="button" id="raz" data-testid="reinitialiser" style="margin-left:8px;padding:2px 8px">Réinitialiser</button>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
