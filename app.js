@@ -1,10 +1,8 @@
 // Boutique Léman — page « Mes adresses » fidèle à l'US « Ajout d'une adresse de livraison » (RB-01 à RB-09,
 // MSG-01 à MSG-09). Données dans localStorage, aucune dépendance.
-// BUG VOLONTAIRE (démo) : en Suisse, un code postal à 5 chiffres est accepté (RB-04 exige exactement 4 chiffres).
-// « ?sansbug » active la version corrigée (mémorisée), « ?avecbug » revient au bug.
 (() => {
   const CLE = 'boutique.adresses';
-  const CLE_MODE = 'boutique.sansbug';
+  const CLE_MODE = 'boutique.version';
   const MAX = 10;
   const PAYS = ['Suisse', 'France', 'Belgique', 'Luxembourg', 'Allemagne'];
   const INTERDITS = /[<>{}[\];]/;
@@ -31,12 +29,12 @@
 
   const exemple = (nom, defaut) => ({ nomAdresse: nom, prenom: 'Alexandre', nom: 'Dupont', societe: '', rue: 'Avenue de la Gare',
     numero: '25A', complement: '', pays: 'Suisse', codePostal: '1003', ville: 'Lausanne', telephone: '+41 79 123 45 67', defaut });
-  if (q.has('sansbug')) localStorage.setItem(CLE_MODE, '1');
-  if (q.has('avecbug')) localStorage.removeItem(CLE_MODE);
+  if (q.get('version') === '2') localStorage.setItem(CLE_MODE, '2');
+  if (q.get('version') === '1') localStorage.removeItem(CLE_MODE);
   if (q.has('reinitialiser') || localStorage.getItem(CLE) === null) sauver([exemple('Domicile', true)]);
   if (q.has('vide')) sauver([]);
   if (q.has('pleine')) sauver(Array.from({ length: MAX }, (_, i) => exemple(i ? `Adresse ${i + 1}` : 'Domicile', i === 0)));
-  const sansBug = () => localStorage.getItem(CLE_MODE) === '1';
+  const version = () => localStorage.getItem(CLE_MODE) || '1';
 
   function lire() { try { return JSON.parse(localStorage.getItem(CLE)) || []; } catch { return []; } }
   function sauver(a) { localStorage.setItem(CLE, JSON.stringify(a)); }
@@ -70,7 +68,7 @@
   }
 
   function codePostalValide(pays, cp) {
-    if (pays === 'Suisse') return sansBug() ? /^\d{4}$/.test(cp) : /^\d{4,5}$/.test(cp); // ← le bug de démo
+    if (pays === 'Suisse') return (version() === '2' ? /^\d{4}$/ : /^\d{4,5}$/).test(cp);
     if (pays === 'Belgique' || pays === 'Luxembourg') return /^\d{4}$/.test(cp);
     if (pays === 'France' || pays === 'Allemagne') return /^\d{5}$/.test(cp);
     return false;
